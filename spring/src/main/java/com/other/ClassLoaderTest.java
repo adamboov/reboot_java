@@ -24,8 +24,9 @@ public class ClassLoaderTest {
         System.out.println("扩展类加载器 的加载路径: ");
 
         urls = extClassLoader.getURLs();
-        for (URL url : urls)
+        for (URL url : urls) {
             System.out.println(url);
+        }
 
         System.out.println("----------------------------");
 

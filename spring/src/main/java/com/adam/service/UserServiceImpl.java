@@ -11,7 +11,7 @@ import com.spring.anno.Scope;
  */
 @Component("userService")
 @Scope("singleton")
-public class UserService implements BeanNameAware, InitializingBean {
+public class UserServiceImpl implements BeanNameAware, InitializingBean, IUserService {
 
     @Autowired
     private OrderService orderService;
@@ -26,8 +26,12 @@ public class UserService implements BeanNameAware, InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         System.out.println("初始化！！！");
+        if ("userService".equals(beanName)) {
+
+        }
     }
 
+    @Override
     public void test() {
         System.out.println(orderService);
         System.out.println(beanName);
