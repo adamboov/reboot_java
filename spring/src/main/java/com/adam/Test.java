@@ -1,5 +1,6 @@
 package com.adam;
 
+import com.adam.service.UserService;
 import com.spring.AtomApplicationContext;
 
 /**
@@ -11,8 +12,9 @@ public class Test {
 
         AtomApplicationContext atomApplicationContext = new AtomApplicationContext(AppConfig.class);
 
-        Object userService = atomApplicationContext.getBean("userService");
+        UserService userService = (UserService) atomApplicationContext.getBean("userService");
         System.out.println(userService);
+        userService.test();
 
     }
 }

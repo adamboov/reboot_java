@@ -1,10 +1,12 @@
 package com.spring;
 
+import com.spring.anno.Autowired;
 import com.spring.anno.Component;
 import com.spring.anno.ComponentScan;
 import com.spring.anno.Scope;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Map;
@@ -16,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class AtomApplicationContext {
 
     public static final String SINGLETON = "singleton";
-
 
     private Class configClass;
 
@@ -40,17 +41,45 @@ public class AtomApplicationContext {
 
             //  如果是单例bean
             if (SINGLETON.equals(beanDefinition.getScope())) {
-                Object bean = createBean(beanDefinition);
+                Object bean = createBean(beanName, beanDefinition);
                 singletonObjects.put(beanName, bean);
             }
         }
 
     }
 
-    public Object createBean(BeanDefinition beanDefinition) {
+    public Object createBean(String beanName, BeanDefinition beanDefinition) {
         Class clazz = beanDefinition.getClazz();
         try {
+            //  实例化对象
             Object instance = clazz.getDeclaredConstructor().newInstance();
+
+            //  依赖注入 对属性进行注入
+
+            for (Field declaredField : clazz.getDeclaredFields()) {
+                if (declaredField.isAnnotationPresent(Autowired.class)) {
+                    Object bean = getBean(declaredField.getName());
+
+                    declaredField.setAccessible(true);
+
+                    declaredField.set(instance, bean);
+                }
+            }
+
+            //  Aware回调
+            if (instance instanceof BeanNameAware) {
+                ((BeanNameAware) instance).setBeanName(beanName);
+            }
+
+            //  初始化
+            if (instance instanceof InitializingBean) {
+                try {
+                    ((InitializingBean) instance).afterPropertiesSet();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
 
             return instance;
         } catch (InstantiationException e) {
@@ -128,7 +157,6 @@ public class AtomApplicationContext {
                         e.printStackTrace();
                     }
 
-
                 }
             }
         }
@@ -144,7 +172,7 @@ public class AtomApplicationContext {
                 return singletonObjects.get(beanName);
             } else {
                 //  创建一个bean 放去单例池
-                return createBean(beanDefinition);
+                return createBean(beanName, beanDefinition);
             }
 
         } else {
