@@ -1,7 +1,6 @@
 package com.adam;
 
 import com.adam.service.IUserService;
-import com.adam.service.UserServiceImpl;
 import com.spring.AtomApplicationContext;
 
 /**

@@ -26,9 +26,6 @@ public class UserServiceImpl implements BeanNameAware, InitializingBean, IUserSe
     @Override
     public void afterPropertiesSet() throws Exception {
         System.out.println("初始化！！！");
-        if ("userService".equals(beanName)) {
-
-        }
     }
 
     @Override

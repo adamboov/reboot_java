@@ -41,6 +41,8 @@ public class AtomApplicationContext {
 
             String beanName = entry.getKey();
 
+            System.out.println("entry.getKey() 的beanName:" + beanName);
+
             BeanDefinition beanDefinition = entry.getValue();
 
             //  如果是单例bean
